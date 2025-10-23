@@ -2,28 +2,48 @@
 
 import { Button } from "./ui/button";
 import { Menu, Phone } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  // Smooth scroll for in-page anchors
+  useEffect(() => {
+    const handleLinkClick = (e: MouseEvent) => {
+      const target = e.target as HTMLAnchorElement;
+      if (target.hash && target.hash.startsWith("#")) {
+        e.preventDefault();
+        const el = document.querySelector(target.hash);
+        if (el) {
+          window.scrollTo({
+            top: el.getBoundingClientRect().top + window.scrollY - 80,
+            behavior: "smooth",
+          });
+          setIsMenuOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener("click", handleLinkClick);
+    return () => document.removeEventListener("click", handleLinkClick);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
-      <div className="max-w-4xl mx-auto px-4 sm:px-5">
-        <div className="flex items-center justify-between h-14">
-          
+    <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm transition-all">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center gap-1.5">
-            <div className="w-7 h-7 bg-gradient-to-br from-emerald-600 to-teal-700 rounded-md flex items-center justify-center">
-              <span className="text-white text-[11px]">🕋</span>
+          <a href="#home" className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-emerald-600 to-teal-700 rounded-lg flex items-center justify-center shadow-sm">
+              <span className="text-white text-[13px]">🕋</span>
             </div>
-            <span className="text-[13px] font-medium text-gray-800 tracking-tight">
+            <span className="text-[15px] text-gray-800 tracking-tight">
               Surosh Travels
             </span>
-          </div>
+          </a>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-4 text-[12.5px] font-light text-gray-600">
+          <nav className="hidden lg:flex items-center gap-6 text-[13px] text-gray-600 font-normal">
             {[
               ["Home", "#home"],
               ["Services", "#services"],
@@ -41,20 +61,23 @@ export function Header() {
             ))}
           </nav>
 
-          {/* Contact & CTA */}
-          <div className="hidden lg:flex items-center gap-3">
-            <div className="flex items-center gap-1 text-[11.5px] text-gray-500">
-              <Phone className="w-3.5 h-3.5 text-emerald-600" />
+          {/* Desktop CTA */}
+          <div className="hidden lg:flex items-center gap-4">
+            <div className="flex items-center gap-1.5 text-[13px] text-gray-500">
+              <Phone className="w-4 h-4 text-emerald-600" />
               <span>+234 812 542 4121</span>
             </div>
-            <Button className="bg-emerald-600 hover:bg-emerald-700 px-3.5 py-1 text-[11.5px] font-medium rounded-full shadow-sm">
-              Book
+            <Button
+              asChild
+              className="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-[13px] font-normal rounded-full shadow-sm transition-all"
+            >
+              <a href="#services">Book Now</a>
             </Button>
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden p-1 text-gray-700 hover:bg-gray-100 rounded-md transition"
+            className="lg:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-md transition"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             <Menu className="w-5 h-5" />
@@ -63,8 +86,8 @@ export function Header() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="lg:hidden py-3 border-t">
-            <nav className="flex flex-col gap-3 text-sm text-gray-700 font-light">
+          <div className="lg:hidden py-3 border-t border-gray-100 bg-white">
+            <nav className="flex flex-col gap-3 text-[14px] text-gray-700 font-normal">
               {[
                 ["Home", "#home"],
                 ["Services", "#services"],
@@ -81,8 +104,11 @@ export function Header() {
                   {label}
                 </a>
               ))}
-              <Button className="bg-emerald-600 hover:bg-emerald-700 w-full mt-3 py-1.5 text-[12px] font-medium rounded-full">
-                Book Now
+              <Button
+                asChild
+                className="bg-emerald-600 hover:bg-emerald-700 w-full mt-3 py-2 text-[13px] font-normal rounded-full shadow-sm"
+              >
+                <a href="#services">Book Now</a>
               </Button>
             </nav>
           </div>
