@@ -1,7 +1,7 @@
 
-  # Travel Services Website
+  # Surosh Travels Website
 
-  This is a code bundle for Travel Services Website. The original project is available at https://www.figma.com/design/f1in1jPHe9t0j9oQnNoFcf/Travel-Services-Website.
+  This is a code bundle for Surosh Travels Website. The original project is available at https://www.figma.com/design/f1in1jPHe9t0j9oQnNoFcf/Travel-Services-Website.
 
   ## Running the code
 

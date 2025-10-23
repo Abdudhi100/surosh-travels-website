@@ -1,7 +1,7 @@
 # Backend Implementation Guide
 
 ## Overview
-Your travel website now has full backend functionality powered by Supabase. The system uses a three-tier architecture: Frontend → Server → Database.
+Your Surosh travels website now has full backend functionality powered by Supabase. The system uses a three-tier architecture: Frontend → Server → Database.
 
 ## Features Implemented
 
