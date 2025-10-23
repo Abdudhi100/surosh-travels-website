@@ -31,7 +31,7 @@ export function Hero() {
             <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full shadow-sm">
               <Star className="w-4 h-4 fill-emerald-700" />
               <span className="text-sm font-medium">
-                Trusted by 10,000+ Pilgrims
+                Trusted by 1,000+ Pilgrims
               </span>
             </div>
 
@@ -70,8 +70,8 @@ export function Hero() {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-6 pt-10 border-t border-gray-200">
               {[
-                { label: "Happy Travelers", value: "10K+" },
-                { label: "Years Experience", value: "15+" },
+                { label: "Happy Travelers", value: "1K+" },
+                { label: "Years Experience", value: "5+" },
                 { label: "Satisfaction Rate", value: "98%" },
               ].map((stat, idx) => (
                 <div key={idx}>
