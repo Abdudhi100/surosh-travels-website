@@ -1,29 +1,25 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { 
+  Card, CardContent, CardDescription, CardHeader, CardTitle 
+} from "./ui/card";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow 
 } from "./ui/table";
 import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue 
 } from "./ui/select";
-import { Mail, Phone, Calendar, Users, Package, DollarSign, RefreshCw, LogOut } from "lucide-react";
-import { getAllContacts, getAllBookings, updateContactStatus, updateBookingStatus } from "../utils/api";
+import { 
+  Mail, Phone, Calendar, Users, Package, DollarSign, RefreshCw, LogOut 
+} from "lucide-react";
 import { toast } from "sonner";
 import { SetupPackages } from "./SetupPackages";
+import { getAllContacts, getAllBookings, updateContactStatus, updateBookingStatus } from "../utils/api";
 import { signOut } from "../utils/supabase/client";
 
+// ---------- Types ----------
 interface Contact {
   id: string;
   name: string;
@@ -31,7 +27,7 @@ interface Contact {
   phone: string;
   service: string;
   message: string;
-  createdAt: string;
+  createdAt?: string | null;
   status: string;
 }
 
@@ -46,7 +42,7 @@ interface Booking {
   departureDate: string;
   specialRequests?: string;
   status: string;
-  createdAt: string;
+  createdAt?: string | null;
   totalAmount: number;
 }
 
@@ -54,11 +50,40 @@ interface AdminDashboardProps {
   onLogout: () => void;
 }
 
+// ---------- Utilities ----------
+const formatDate = (date?: string | null) =>
+  date ? new Date(date).toLocaleString() : "—";
+
+const StatusSelect = ({
+  value,
+  options,
+  onChange
+}: {
+  value: string;
+  options: string[];
+  onChange: (v: string) => void;
+}) => (
+  <Select value={value} onValueChange={onChange}>
+    <SelectTrigger className="w-32">
+      <SelectValue />
+    </SelectTrigger>
+    <SelectContent>
+      {options.map(o => (
+        <SelectItem key={o} value={o}>
+          {o[0].toUpperCase() + o.slice(1)}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+);
+
+// ---------- Component ----------
 export function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Fetch all data
   const loadData = async () => {
     setIsLoading(true);
     try {
@@ -66,9 +91,21 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
         getAllContacts(),
         getAllBookings()
       ]);
-      
-      setContacts(contactsData || []);
-      setBookings(bookingsData|| []);
+
+      setContacts(
+        (contactsData || []).map(c => ({
+          ...c,
+          createdAt: c.createdAt || c.created_at || null
+        }))
+      );
+
+      setBookings(
+        (bookingsData || []).map(b => ({
+          ...b,
+          createdAt: b.createdAt || b.created_at || null
+        }))
+      );
+
       toast.success("Data loaded successfully");
     } catch (error) {
       console.error("Error loading admin data:", error);
@@ -82,12 +119,13 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
     loadData();
   }, []);
 
+  // Handlers
   const handleContactStatusChange = async (contactId: string, newStatus: string) => {
     try {
       await updateContactStatus(contactId, newStatus);
-      setContacts(contacts.map(c => 
-        c.id === contactId ? { ...c, status: newStatus } : c
-      ));
+      setContacts(prev =>
+        prev.map(c => (c.id === contactId ? { ...c, status: newStatus } : c))
+      );
       toast.success("Contact status updated");
     } catch (error) {
       console.error("Error updating contact status:", error);
@@ -98,9 +136,9 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const handleBookingStatusChange = async (bookingId: string, newStatus: string) => {
     try {
       await updateBookingStatus(bookingId, newStatus);
-      setBookings(bookings.map(b => 
-        b.id === bookingId ? { ...b, status: newStatus } : b
-      ));
+      setBookings(prev =>
+        prev.map(b => (b.id === bookingId ? { ...b, status: newStatus } : b))
+      );
       toast.success("Booking status updated");
     } catch (error) {
       console.error("Error updating booking status:", error);
@@ -108,38 +146,33 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    const variants: Record<string, string> = {
-      new: "bg-blue-100 text-blue-700",
-      contacted: "bg-yellow-100 text-yellow-700",
-      resolved: "bg-green-100 text-green-700",
-      pending: "bg-orange-100 text-orange-700",
-      confirmed: "bg-green-100 text-green-700",
-      cancelled: "bg-red-100 text-red-700"
-    };
-
-    return (
-      <Badge className={variants[status] || "bg-gray-100 text-gray-700"}>
-        {status}
-      </Badge>
-    );
-  };
-
-  // Calculate stats
+  // Derived Stats
   const stats = {
     totalContacts: contacts.length,
-    newContacts: contacts.filter(c => c.status === 'new').length,
+    newContacts: contacts.filter(c => c.status === "new").length,
     totalBookings: bookings.length,
-    pendingBookings: bookings.filter(b => b.status === 'pending').length,
-    confirmedBookings: bookings.filter(b => b.status === 'confirmed').length,
+    pendingBookings: bookings.filter(b => b.status === "pending").length,
+    confirmedBookings: bookings.filter(b => b.status === "confirmed").length,
     totalRevenue: bookings
-      .filter(b => b.status === 'confirmed')
-      .reduce((sum, b) => sum + b.totalAmount, 0)
+      .filter(b => b.status === "confirmed")
+      .reduce((sum, b) => sum + (b.totalAmount || 0), 0)
   };
 
+  // Loading State
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <RefreshCw className="w-6 h-6 animate-spin text-gray-500" />
+        <span className="ml-2 text-gray-600">Loading admin data...</span>
+      </div>
+    );
+  }
+
+  // ---------- Render ----------
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
+        {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl mb-2">Admin Dashboard</h1>
@@ -149,10 +182,10 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
           </div>
           <div className="flex gap-2">
             <Button onClick={loadData} disabled={isLoading} variant="outline">
-              <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
               Refresh
             </Button>
-            <Button 
+            <Button
               onClick={async () => {
                 try {
                   await signOut();
@@ -176,60 +209,46 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
 
         {/* Stats Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm">Total Contacts</CardTitle>
-              <Mail className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl">{stats.totalContacts}</div>
-              <p className="text-xs text-muted-foreground">
-                {stats.newContacts} new
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm">Total Bookings</CardTitle>
-              <Package className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl">{stats.totalBookings}</div>
-              <p className="text-xs text-muted-foreground">
-                {stats.pendingBookings} pending
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm">Confirmed Bookings</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl">{stats.confirmedBookings}</div>
-              <p className="text-xs text-muted-foreground">
-                Active trips
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm">Total Revenue</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl">${stats.totalRevenue.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
-                From confirmed bookings
-              </p>
-            </CardContent>
-          </Card>
+          {[
+            {
+              title: "Total Contacts",
+              icon: <Mail className="h-4 w-4 text-muted-foreground" />,
+              value: stats.totalContacts,
+              desc: `${stats.newContacts} new`
+            },
+            {
+              title: "Total Bookings",
+              icon: <Package className="h-4 w-4 text-muted-foreground" />,
+              value: stats.totalBookings,
+              desc: `${stats.pendingBookings} pending`
+            },
+            {
+              title: "Confirmed Bookings",
+              icon: <Users className="h-4 w-4 text-muted-foreground" />,
+              value: stats.confirmedBookings,
+              desc: "Active trips"
+            },
+            {
+              title: "Total Revenue",
+              icon: <DollarSign className="h-4 w-4 text-muted-foreground" />,
+              value: `$${stats.totalRevenue.toLocaleString()}`,
+              desc: "From confirmed bookings"
+            }
+          ].map((item, i) => (
+            <Card key={i}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm">{item.title}</CardTitle>
+                {item.icon}
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl">{item.value}</div>
+                <p className="text-xs text-muted-foreground">{item.desc}</p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
-        {/* Tabs for different sections */}
+        {/* Tabs */}
         <Tabs defaultValue="contacts" className="space-y-4">
           <TabsList>
             <TabsTrigger value="contacts">
@@ -240,6 +259,7 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
             </TabsTrigger>
           </TabsList>
 
+          {/* Contacts */}
           <TabsContent value="contacts" className="space-y-4">
             <Card>
               <CardHeader>
@@ -266,7 +286,7 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {contacts.map((contact) => (
+                      {contacts.map(contact => (
                         <TableRow key={contact.id}>
                           <TableCell>{contact.name}</TableCell>
                           <TableCell>
@@ -288,22 +308,14 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
                             {contact.message}
                           </TableCell>
                           <TableCell className="text-sm">
-                            {new Date(contact.createdAt).toLocaleDateString()}
+                            {formatDate(contact.createdAt)}
                           </TableCell>
                           <TableCell>
-                            <Select
+                            <StatusSelect
                               value={contact.status}
-                              onValueChange={(value: string) => handleContactStatusChange(contact.id, value)}
-                            >
-                              <SelectTrigger className="w-32">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="new">New</SelectItem>
-                                <SelectItem value="contacted">Contacted</SelectItem>
-                                <SelectItem value="resolved">Resolved</SelectItem>
-                              </SelectContent>
-                            </Select>
+                              options={["new", "contacted", "resolved"]}
+                              onChange={v => handleContactStatusChange(contact.id, v)}
+                            />
                           </TableCell>
                         </TableRow>
                       ))}
@@ -314,6 +326,7 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
             </Card>
           </TabsContent>
 
+          {/* Bookings */}
           <TabsContent value="bookings" className="space-y-4">
             <Card>
               <CardHeader>
@@ -341,7 +354,7 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {bookings.map((booking) => (
+                      {bookings.map(booking => (
                         <TableRow key={booking.id}>
                           <TableCell>
                             <div className="text-sm">
@@ -362,27 +375,17 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
                           <TableCell>
                             <div className="flex items-center gap-1">
                               <Calendar className="w-4 h-4" />
-                              {new Date(booking.departureDate).toLocaleDateString()}
+                              {formatDate(booking.departureDate)}
                             </div>
                           </TableCell>
-                          <TableCell>${booking.totalAmount.toLocaleString()}</TableCell>
-                          <TableCell className="text-sm">
-                            {new Date(booking.createdAt).toLocaleDateString()}
-                          </TableCell>
+                          <TableCell>${booking.totalAmount ? new Date(booking.totalAmount).toLocaleString() : "—"}</TableCell>
+                          <TableCell>{formatDate(booking.createdAt)}</TableCell>
                           <TableCell>
-                            <Select
+                            <StatusSelect
                               value={booking.status}
-                              onValueChange={(value: string) => handleBookingStatusChange(booking.id, value)}
-                            >
-                              <SelectTrigger className="w-32">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="pending">Pending</SelectItem>
-                                <SelectItem value="confirmed">Confirmed</SelectItem>
-                                <SelectItem value="cancelled">Cancelled</SelectItem>
-                              </SelectContent>
-                            </Select>
+                              options={["pending", "confirmed", "cancelled"]}
+                              onChange={v => handleBookingStatusChange(booking.id, v)}
+                            />
                           </TableCell>
                         </TableRow>
                       ))}

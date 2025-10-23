@@ -2,3 +2,4 @@
 
 export const projectId = "xodelvhhdnywkzpehugk"
 export const publicAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhvZGVsdmhoZG55d2t6cGVodWdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5MTE3NDIsImV4cCI6MjA3NjQ4Nzc0Mn0.J7AqUlmtH7eDX4dNTDsmatK4u_6hrBEhr9yuPpe1xAM"
+
