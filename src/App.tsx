@@ -77,8 +77,9 @@ function AppRoutes({
         path="/"
         element={
           <>
-            <Header />
+          <Header />  
             <main>
+              
               <Hero />
               <Services />
               <Features />
