@@ -473,9 +473,30 @@
       padding-bottom: 0rem;
     }
   }
+  .header-logo-mobile-center {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @media (min-width: 1024px) {
+    .header-logo-mobile-center {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  .mobile-nav a {
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  .mobile-nav a:hover {
+    color: #047857; /* emerald-700 */
+  }
+  /* Header negative margin for overlap effect */
 
   .header-negative {
-    margin-top: 2rem;   /* pulls header upward */
+    margin-top: 0rem;   /* pulls header upward */
   }
 
   @media (min-width: 1024px) {
