@@ -445,7 +445,7 @@
     container: card-header / inline-size;
   }
   .logo-size {
-    width: 20rem;   /* Increase this to experiment (10rem = 160px) */
+    width: 16rem;   /* Increase this to experiment (10rem = 160px) */
     height: auto;
     object-fit: contain;
     image-rendering: -webkit-optimize-contrast;
@@ -459,12 +459,13 @@
       height: auto;
     }
   }
-
+  
+  
   /* Header padding responsive */
   
   .header-padding {
-    padding-top: 0rem;   /* smaller on mobile */
-    padding-bottom: 0rem;
+    padding-top: -5rem;   /* smaller on mobile */
+    padding-bottom: -5rem;
   }
 
   @media (min-width: 1024px) {
@@ -484,6 +485,23 @@
       margin-right: 0;
     }
   }
+  .hero-overlap {
+    position: relative;
+    z-index: 60;
+  }
+
+  /* Ensures image and text in hero stack above header background */
+  .hero-content-overlap {
+    position: relative;
+    z-index: 70;
+  }
+  
+  
+
+  /* Optional: soft transition if scrolling overlaps */
+  .hero-transition {
+    transition: all 0.3s ease-in-out;
+  }
 
   .mobile-nav a {
     font-size: 1rem;
@@ -496,7 +514,8 @@
   /* Header negative margin for overlap effect */
 
   .header-negative {
-    margin-top: 0rem;   /* pulls header upward */
+    margin-top: -4rem;
+    margin-bottom: -4rem;   /* pulls header upward */
   }
 
   @media (min-width: 1024px) {

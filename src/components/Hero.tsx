@@ -1,11 +1,12 @@
+// Hero.tsx
 import { Button } from "./ui/button";
 import { ArrowRight, Star } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
 export function Hero() {
   return (
-    <section id="home" className="relative lg:z-30 bg-gradient-to-br from-emerald-50 to-teal-50 hero-padding overflow-visible lg:-mt-32">
-      <div className="container mx-auto px-4">
+    <section id="home" className="relative  bg-gradient-to-br from-emerald-50 to-teal-50 hero-padding overflow-visible lg:-mt-32">
+      <div className="container mx-auto px-4 hero-overlap">
         {/* Mobile: Image on top, Desktop: Side by side with text overlapping image */}
         <div className="flex flex-col lg:flex-row lg:items-start gap-8 lg:gap-0 relative lg:z-50">
           
