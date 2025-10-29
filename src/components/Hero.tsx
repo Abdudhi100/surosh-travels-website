@@ -5,13 +5,13 @@ import { ImageWithFallback } from "./figma/ImageWithFallback";
 
 export function Hero() {
   return (
-    <section id="home" className="relative  bg-gradient-to-br from-emerald-50 to-teal-50 hero-padding overflow-visible lg:-mt-32">
+    <section id="home" className="relative header-hero-unified hero-padding-uniform bg-gradient-to-br from-emerald-50 to-teal-50 hero-padding overflow-visible lg:-mt-32">
       <div className="container mx-auto px-4 hero-overlap">
         {/* Mobile: Image on top, Desktop: Side by side with text overlapping image */}
         <div className="flex flex-col lg:flex-row lg:items-start gap-8 lg:gap-0 relative lg:z-50">
           
           {/* Image Container - Shows first on mobile and desktop */}
-          <div className="order-2 lg:order-2 lg:w-[60%] lg:-mt-20 relative lg:z-[70]">
+          <div className="order-2 hero-image-fade lg:order-2 lg:w-[60%] lg:-mt-20 relative lg:z-[70]">
             <div className="hero-card-blend relative rounded-2xl overflow-hidden lg:h-[700px]">
               <ImageWithFallback
                 src="https://images.unsplash.com/photo-1736240624842-c13db7ba4275?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxrYWFiYSUyMG1lY2NhJTIwcGlsZ3JpbWFnZXxlbnwxfHx8fDE3NjA5NDcxNzR8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"

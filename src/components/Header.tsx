@@ -7,7 +7,7 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="relative top-0 z-50 bg-white border-b header-negative ">
+    <header className="relative top-0 z-50 bg-white border-b header-negative-uniform ">
       <div className="container mx-auto px-8 lg:px-16 header-padding">
         <div className="flex items-center justify-between">
           {/* Logo */}

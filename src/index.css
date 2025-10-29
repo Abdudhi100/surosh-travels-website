@@ -460,7 +460,79 @@
     }
   }
   
-  
+  .header-hero-unified {
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 0.95) 10%,
+      rgba(240, 253, 244, 0.95) 30%,
+      rgba(240, 253, 244, 1) 100%
+    );
+  }
+
+  /* Creates a smooth connection between header and hero */
+  .header-hero-smooth {
+    position: relative;
+  }
+
+  .header-hero-smooth::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 6rem;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 1),
+      rgba(240, 253, 244, 0.8),
+      rgba(240, 253, 244, 0)
+    );
+    pointer-events: none;
+  }
+
+  /* Adjust overlap for seamless transition */
+  .header-negative-uniform {
+    margin-top: -3rem;
+    margin-bottom: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  @media (min-width: 1024px) {
+    .header-negative-uniform {
+      margin-top: -4rem;
+    }
+  }
+
+  /* Hero top padding tuned to avoid harsh stack */
+  .hero-padding-uniform {
+    padding-top: 5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .hero-padding-uniform {
+      padding-top: 7rem;
+    }
+  }
+
+  /* Optional: image fade to blend hero image into header background */
+  .hero-image-fade::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    z-index: 2;
+    pointer-events: none;
+  }
   /* Header padding responsive */
   
   .header-padding {
@@ -488,6 +560,7 @@
   .hero-overlap {
     position: relative;
     z-index: 60;
+    margin-top: 0;
   }
 
   /* Ensures image and text in hero stack above header background */
@@ -515,7 +588,9 @@
 
   .header-negative {
     margin-top: -4rem;
-    margin-bottom: -4rem;   /* pulls header upward */
+    margin-bottom: -4rem;/* pulls header upward */
+    border-bottom: none;
+    box-shadow: none;
   }
 
   @media (min-width: 1024px) {
