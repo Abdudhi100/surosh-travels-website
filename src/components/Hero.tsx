@@ -40,14 +40,22 @@ export function Hero() {
               </p>
 
               <div className="flex flex-wrap gap-3">
-                <Button size="default" className="bg-emerald-600 hover:bg-emerald-700">
-                  Explore Packages
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button> 
+              {/* Explore Packages → Services section */}
+                <a href="#services">
+                  <Button size="default" className="bg-emerald-600 hover:bg-emerald-700">
+                    Explore Packages
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </a>
+
+              {/* Contact Us → Contact section */}
+                <a href="#contact">
                 <Button size="default" variant="outline">
                   Contact Us
                 </Button>
+                </a>
               </div>
+
 
               {/* Stats */}
               <div className="grid grid-cols-3 gap-4 pt-6 border-t">
